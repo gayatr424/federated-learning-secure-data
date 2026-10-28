@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+{% set active_page = "tsp" %}
+{% block title %}Travelling Salesman Problem{% endblock %}
+{% block content %}
+<link href="{{ url_for('static', filename='css/opt.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/opt2.css') }}" rel="stylesheet">
+<div class="container">
+    <div class="py-1 text-center">
+        <h3>Optimization of the Travelling Salesman Problem!</h3>
+        <p class="lead">Applied Optimization Algorithms and Machine Learning on Flask</p>
+        <hr>
+    </div>
+    <form id="tspform" method="post" class="d-inline" enctype="multipart/form-data">
+        <h5><strong>Upload a file (csv) containing the coordinates of the cities or choose one of the ready maps.</strong></h5>
+        <!-- File Upload -->
+        <center class="border-secondary"
+            style="border: 0.2px solid rgba(165, 165, 165, 0.9); border-radius: 0 0 10px 10px;">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6">
+                        <center>
+                            <label for="cityfile">
+                                <h5> Upload File (.csv)</h5>
+                            </label>
+                            <input type="file" class="form-control-file btn-lg btn-primary mt-3" name="cityfile"
+                                id="cityfile" accept=".csv" style="width: 80%;">
+                        </center>
+                    </div>
+                    <div class="col-md-6">
+                        <center>
+                            <h5>Example .csv Format</h5>
+                            <img class="card-img-top" src="{{ url_for('static', filename='img/csv_template.PNG') }}"
+                                alt="Card image cap" style="height: 60%; width: 80%;">
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </center>
+        <!-- Ready Maps  -->
+        <strong class="mt-3">Ready Maps</strong>
+        <center class="border-secondary"
+            style="border: 0.2px solid rgba(165, 165, 165, 0.1); padding: 10px; border-radius: 0 0 10px 10px;">
+            <div class="form-row">
+                <div class="col-md-3">
+                    <label>
+                        <input type="radio" name="map" id="marmara" class="card-input-element2 d-none" value="marmara"
+                            onclick="cardChecked(this);" checked />
+                        <div
+                            class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                            Marmara Region
+                        </div>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <label>
+                        <input type="radio" name="map" id="icanadolu" class="card-input-element2 d-none"
+                            value="icanadolu" onclick="cardChecked(this);" />
+                        <div
+                            class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                            Central Anatolia Region
+                        </div>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <label>
+                        <input type="radio" name="map" id="karadeniz" class="card-input-element2 d-none"
+                            value="karadeniz" onclick="cardChecked(this);" />
+                        <div
+                            class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                            Black Sea Region
+                        </div>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <label>
+                        <input type="radio" name="map" id="doguanadolu" class="card-input-element2 d-none"
+                            value="doguanadolu" onclick="cardChecked(this);" />
+                        <div
+                            class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                            Eastern Anatolia Region
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-3">
+                    <label>
+                        <input type="radio" name="map" id="guneydogu" class="card-input-element2 d-none"
+                            value="guneydogu" onclick="cardChecked(this);" />
+                        <div
+                            class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                            Southeastern Anatolia Region
+                        </div>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <label>
+                        <input type="radio" name="map" id="akdeniz" class="card-input-element2 d-none" value="akdeniz"
+                            onclick="cardChecked(this);" />
+                        <div
+                            class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                            Mediterranean Region
+                        </div>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <label>
+                        <input type="radio" name="map" id="ege" class="card-input-element2 d-none" value="ege"
+                            onclick="cardChecked(this);" />
+                        <div
+                            class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                            Aegean Region
+                        </div>
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <label>
+                        <input type="radio" name="map" id="sehirler" class="card-input-element2 d-none"
+                            value="sehirler" onclick="cardChecked(this);" />
+                        <div
+                            class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                            Random City
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </center>
+        <hr />
+        <!-- Form for Algorithm parameters. -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-white"
+                        style="background-image: linear-gradient(to left,#826d57,#863b22 ) !important">
+                        <h4>Ant Colony Parameters</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label>Number of Ants</label>
+                                <input type="number" value="15" class="form-control" name="ant_size" id="ant_size"
+                                    placeholder="Karınca Sayısı" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Pheromone Evaporation Rate</label>
+                                <input type="number" value="0.3" step="any" class="form-control" name="pheromone_rho"
+                                    id="pheromone_rho" placeholder="Feromon Miktarı" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label>Alfa</label>
+                                <input type="number" step="any" value="1" class="form-control" name="alpha" id="alpha"
+                                    placeholder="Alfa Değeri" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Beta</label>
+                                <input type="number" step="0.1" value="2.5" min="0.1" max="5.0" class="form-control"
+                                    name="beta" id="beta" placeholder="Beta Değeri" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-white" style="background-color: #5b9ad5;
+                    background-image: linear-gradient(to left,#5b9ad5,#007bff ) !important"">
+                        <h4>Genetik Algoritma Parametreleri</h4>
+                    </div>
+                    <div class=" card-body">
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label>Number of Individuals</label>
+                                <input type="number" value="50" min="5" max="100" class="form-control" name="life_count"
+                                    id="life_count" placeholder="Birey Sayısı" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Mutation Probability </label>
+                                <input type="number" value="0.1" min="0.01" max="1.0" step="0.01" class="form-control"
+                                    name="mutation_rate" id="mutation_rate" placeholder="Mutasyon Olasılığı" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-12 mb-3">
+                                <label>Crossover Probability</label>
+                                <input type="number" value="0.9" min="0.01" max="1.0" step="0.01" class="form-control"
+                                    name="cross_rate" id="cross_rate" placeholder="Çaprazlama Olasılığı" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                <div class="card">
+                    <div class="card-header text-white" style="background-color: #5b9ad5;
+                    background-image: linear-gradient(to right,#e65c00,#F7971E ,#F9D423 ) !important"">
+                        <h4>Artificial Bee Colony Parameters</h4>
+                    </div>
+                    <div class=" card-body">
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <label>Number of Bees</label>
+                                <input type="number" value="30" min="5" max="100" class="form-control"
+                                    name="number_of_bees" id="number_of_bees" placeholder="Arı Sayısı" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Number of Worker Bees</label>
+                                <input type="number" value="10" min="5" max="100" class="form-control"
+                                    name="number_of_worker_bees" id="number_of_worker_bees"
+                                    placeholder="İşçi Arı Sayısı" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Algorithm Limits</label>
+                                <input type="number" value="5" min="3" max="20" class="form-control" name="limit"
+                                    id="limit" placeholder="Algoritma Limiti" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3 mb-1">
+            <div class="col-md-12">
+                <div class="form-row">
+                    <label for="formControlRange">Determine the Iteration Number</label>
+                    <input type="range" class="form-control-range text-success" min="10" max="110" step=10
+                        id="iteration" name="iteration" oninput="iteration1.value = this.value">
+                    <output id="iteration1" name="iteration1">60</output>
+                </div>
+                <hr>
+            </div>
+        </div>
+        <center>
+            <div class="col-md-4">
+                <button type="submit" id="btn_run" class="btn btn-primary btn-lg btn-block">Start the Test!</button>
+            </div>
+        </center>
+    </form>
+    <br />
+    <!-- Loader icon -->
+    <center>
+        <div id="wait" style="display: none;">
+            <span class="loader">
+                <span class="loader-inner"></span>
+            </span>
+            <br>
+            <p class="mt-2">Loading...</p>
+        </div>
+    </center>
+    <!-- Form Validation Error via Backend -->
+    <center>
+        <div class="col-md-6">
+            <div class="alert alert-danger alert-dismissible mt-2 mb-2" id="errorAlert" role="alert"
+                style="display: none;">
+                <strong id="errorAlertText"></strong>
+            </div>
+            <br /><br />
+        </div>
+    </center>
+    <br>
+</div>
+<!-- Image Zoom Modal -->
+<div id="modal01" class="modaltest" onclick="this.style.display='none'">
+    <span class="close">&times;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <div class="modal-content">
+        <center>
+            <img id="img01" class="" width="80%" height="80%">
+        </center>
+    </div>
+</div>
+<!-- Plotting Area for algorithms outputs -->
+<div id="plot_area" style="display: none;">
+    <center>
+        <h4>Comparison Charts</h4>
+    </center>
+    <div class="container">
+        <hr />
+        <div class="row">
+            <div class="col-md-7">
+                <img id="ga_vs_aco_routes" src="" style="width: 100%; height: 400px;" onclick="onClick(this)"
+                    class="img-for-modal" />
+            </div>
+            <div class="col-md-5 mt-5">
+                <img id="ga_vs_aco_cost" src="" style="width: 100%; height: 300px;" onclick="onClick(this)"
+                    class="img-for-modal" />
+            </div>
+        </div>
+    </div>
+    <center>
+        <h4>Ant Colony Graphics</h4>
+    </center>
+    <div class="container">
+        <hr />
+        <div class="row">
+            <div class="col-md-7">
+                <img id="aco_route" src="" style="width: 100%; height: 400px;" onclick="onClick(this)"
+                    class="img-for-modal" />
+            </div>
+            <div class="col-md-5 mt-5">
+                <img id="aco_cost" src="" style="width: 100%; height: 300px;" onclick="onClick(this)"
+                    class="img-for-modal" />
+            </div>
+        </div>
+    </div>
+    <center>
+        <h4>Artificial Bee Colony Graphics</h4>
+    </center>
+    <div class="container">
+        <hr />
+        <div class="row">
+            <div class="col-md-7">
+                <img id="abc_route" src="" style="width: 100%; height: 400px;" onclick="onClick(this)"
+                    class="img-for-modal" />
+            </div>
+            <div class=" col-md-5 mt-5">
+                <img id="abc_cost" src="" style="width: 100%; height: 300px;" onclick="onClick(this)"
+                    class="img-for-modal" />
+            </div>
+        </div>
+    </div>
+    <center>
+        <h4>Genetic Algorithm Graphs</h4>
+    </center>
+    <div class="container">
+        <hr />
+        <div class="row">
+            <div class="col-md-7">
+                <img id="ga_route" src="" style="width: 100%; height: 400px;" onclick="onClick(this)"
+                    class="img-for-modal" />
+            </div>
+            <div class=" col-md-5 mt-5">
+                <img id="ga_cost" src="" style="width: 100%; height: 300px;" onclick="onClick(this)"
+                    class="img-for-modal" />
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/tsp.js') }}"></script>
+{% endblock %}

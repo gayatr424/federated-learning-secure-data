@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+{% set active_page = "opt" %}
+{% block title %}Metaheuristic Methods{% endblock %}
+{% block content %}
+<link href="{{ url_for('static', filename='css/opt.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/opt2.css') }}" rel="stylesheet">
+<form id="opt_form" class="d-inline" method="POST">
+    <div class=container>
+        <div class="py-1 text-center">
+            <h3>Test Optimization Algorithms!</h3>
+            <p class="lead">Applied Optimization Algorithms and Machine Learning on Flask</p>
+            <hr>
+        </div>
+        <center>
+            <div class="col-md-6">
+                <div class="alert alert-primary in text-center"> </a>
+                    Select <strong> at least 2</strong> algorithms to compare.
+                </div>
+                <br>
+            </div>
+        </center>
+        <!-- Optimization Algorithm selection for comparison. -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="card border-success" style="border: 2px solid transparent;">
+                    <label>
+                        <input type="checkbox" name="alg_checkbox" value="abc" class="card-input-element d-none"
+                            id="alg_checkbox" onclick="card_checked(this);" checked>
+                        <div
+                            class="card card-header bg-light d-flex flex-row justify-content-between align-items-center">
+                            <h4>
+                                Artificial Bee Algorithm (ABC)
+                            </h4>
+                        </div>
+                    </label>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label>Number of Bees - Number of Food</label>
+                                <input type="number" value="30" min="5" max="100" step="1" step="any"
+                                    class="form-control" name="abc_populationSize" id="abc_populationSize"
+                                    placeholder="Arı Sayısı - Besin Sayısı" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Limit</label>
+                                <input type="number" inputmode="decimal" min="2" max="150" step="1" value="10" step="any"
+                                    class="form-control" name="abc_limit" id="abc_limit" placeholder="Limit" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <label>
+                        <input type="checkbox" name="alg_checkbox" value="sa" class="card-input-element d-none"
+                            id="alg_checkbox" onclick="card_checked(this);">
+                        <div
+                            class="card card-header bg-light d-flex flex-row justify-content-between align-items-center">
+                            <h4>
+                                Simulated Annealing (SA)
+                            </h4>
+                        </div>
+                    </label>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <label>Maximum Temperature</label>
+                                <input type="number" value="10000" min="1" max="10000" step="100" class="form-control"
+                                    name="sa_temperature" id="sa_temperature" placeholder="Maksimum Sıcaklık" disabled
+                                    required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Cooling Coefficient</label>
+                                <input type="number" value="0.99" inputmode="decimal" min="0.1" max="1" step="0.1"
+                                    class="form-control" name="sa_cooling_coefficient" id="sa_cooling_coefficient"
+                                    placeholder="Soğuma Katsayısı" disabled required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Delta</label>
+                                <input type="number" value="0.10" inputmode="decimal" min="0.1" max="10" step="0.2"
+                                    class="form-control" name="sa_delta" id="sa_delta" placeholder="Delta" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <label>
+                        <input type="checkbox" name="alg_checkbox" value="pso" class="card-input-element d-none"
+                            id="alg_checkbox" onclick="card_checked(this);">
+                        <div
+                            class="card card-header bg-light d-flex flex-row justify-content-between align-items-center">
+                            <h4>
+                                Particle Swarm Optimization (PSO)
+                            </h4>
+                        </div>
+                    </label>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <label>Number of Individuals in the Herd</label>
+                                <input type="number" value="30" min="5" max="100" step="1" class="form-control"
+                                    name="pso_particle_size" id="pso_particle_size" placeholder="Süredeki Birey Sayısı"
+                                    required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Weight</label>
+                                <input type="number" value="0.8" inputmode="decimal" min="0.1" max="3.0" step="0.1"
+                                    class="form-control" name="pso_weight" id="pso_weight" placeholder="Weight(w)"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <label>
+                        <input type="checkbox" name="alg_checkbox" value="dea" class="card-input-element d-none"
+                            id="alg_checkbox" onclick="card_checked(this);">
+                        <div
+                            class="card card-header bg-light d-flex flex-row justify-content-between align-items-center">
+                            <h4>
+                                Differential Evolution Algorithm (DEA)
+                            </h4>
+                        </div>
+                    </label>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <label>Population Number</label>
+                                <input type="number" value="30" class="form-control" min="5" max="100" step="0.1"
+                                    name="dea_population_size" id="dea_population_size" placeholder="Popülasyon Sayısı"
+                                    required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Scaling Function.</label>
+                                <input type="number" value="0.5" inputmode="decimal" class="form-control" min="0.01"
+                                    max="0.99" step="0.01" name="dea_mutation_rate" id="dea_mutation_rate"
+                                    placeholder="Mutasyon Olasılığı" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Combination Possibility</label>
+                                <input type="number" value="0.5" inputmode="decimal" class="form-control" min="0.01"
+                                    max="0.99" step="0.01" name="dea_crossRate" id="dea_crossRate"
+                                    placeholder="Kombimasyon Olasılığı" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Determine the Functions You Want to Test, the Number of Iterations, and the Problem Size
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <label for="formControlRange">Determine the Iteration Number</label>
+                            <input type="range" class="form-control-range text-success" min="10" max="110" step=10
+                                id="iteration" name="iteration" oninput="iteration1.value = this.value">
+                        </div>
+                        <center>
+                            <h4><output id="iteration1" name="iteration1">60</output></h4>
+                        </center>
+                        <hr>
+                        <label>Test Functions</label>
+                        <div class="form-row">
+                            <div class="col-md-3">
+                                <label>
+                                    <input type="radio" name="obj_function" id="sphere"
+                                        class="card-input-element2 d-none" value="sphere" checked />
+                                    <div
+                                        class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                                        Sphere Function
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label>
+                                    <input type="radio" name="obj_function" id="rastrigin"
+                                        class="card-input-element2 d-none" value="rastrigin" />
+                                    <div
+                                        class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                                        Rastrigin Function
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>
+                                    <input type="radio" name="obj_function" id="rosenbrock"
+                                        class="card-input-element2 d-none" value="rosenbrock" />
+                                    <div
+                                        class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                                        Rosenbrock Function
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label>
+                                    <input type="radio" name="obj_function" id="griewank"
+                                        class="card-input-element2 d-none" value="rosenbrock" />
+                                    <div
+                                        class="card2 card-body bg-light d-flex flex-row justify-content-between align-items-center">
+                                        Griewank Function
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                                <label>Problem Size</label>
+                                <input type="number" value="2" class="form-control" name="problem_size"
+                                    id="problem_size" min="1" max="10" step="1" placeholder="Crossover Probability"
+                                    required>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label>Maximum Limit</label>
+                                    <input type="number" value="5.12" inputmode="decimal" class="form-control"
+                                        name="bound" min="1.0" max="600" step="0.01" inputmode="decimal" id="bound"
+                                        placeholder="Upper Limit" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Borders</label>
+                                    <input type="text" disabled class="form-control" id="bounds"
+                                        value="(-5.12, 5.12) The boundaries were determined as.">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <center>
+        <div class="col-md-4">
+            <button type="submit" id="btn_run" class="btn btn-primary btn-lg btn-block">Start the Test!</button>
+        </div>
+    </center>
+    </div>
+</form>
+<br>
+<!-- Loader icon -->
+<center>
+    <div id="wait" style="display: none;">
+        <span class="loader">
+            <span class="loader-inner"></span>
+        </span>
+        <br>
+        <p class="mt-2">Loading...</p>
+    </div>
+</center>
+<!-- Form Validation Error via Backend -->
+<center>
+    <div class="col-md-6">
+        <div class="alert alert-danger alert-dismissible mt-2 mb-2" id="errorAlert" role="alert" style="display: none;">
+            <strong id="errorAlertText"></strong>
+        </div>
+        <br /><br/>
+    </div>
+</center>
+</div>
+<!-- Image Zoom Modal -->
+<div id="modal01" class="modaltest" onclick="this.style.display='none'">
+    <span class="close">&times;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <div class="modal-content">
+        <center>
+            <img id="img01" class="" width="80%" height="80%">
+        </center>
+    </div>
+</div>
+<div class="container" id="plot_area" style="display: none;">
+    <center>
+        <h4>Your Comparison Results</h4>
+    </center>
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <center>
+                <img id="compare_graph2" src="" style="width: 60%; height: 80%;" onclick="onClick(this)"
+                    class="img-for-modal">
+            </center>
+        </div>
+    </div>
+    <br />
+    <center>
+        <h4>Other Results</h4>
+    </center>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <img id="abc_cost_graph" src="" style="width: 100%; height: 100%;" onclick="onClick(this)"
+                class="img-for-modal" />
+        </div>
+        <div class="col-md-6">
+            <img id="sa_cost_graph" src="" style="width: 100%; height: 100%" onclick="onClick(this)"
+                class="img-for-modal" />
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <img id="pso_cost_graph" src="" style="width: 100%; height: 100%" onclick="onClick(this)"
+                class="img-for-modal" />
+        </div>
+        <div class="col-md-6">
+            <img id="de_cost_graph" src="" style="width: 100%; height: 100%" onclick="onClick(this)"
+                class="img-for-modal" />
+        </div>
+    </div>
+    <br />
+    <center>
+        <h4>Comparison Results of All Algorithms</h4>
+    </center>
+    <hr />
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <center>
+                <img id="all_compare_graph" src="" style="width: 80%; height: 100%;" onclick="onClick(this)"
+                    class="img-for-modal">
+            </center>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/opt.js') }}"></script>
+{% endblock %}

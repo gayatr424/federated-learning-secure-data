@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% set active_page = "index" %}
+{% block title %}Home Index{% endblock %}
+{% block content %}
+<link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+<div class="wrapper">
+    <div class="custom-card">
+        <h3 class="custom-card-title">OPTIMIZATION</h3>
+        <p class="custom-card-content">The literal meaning is “to bring to the best possible state.” Optimization, in its simplest definition, helps to improve results by helping to select the inputs that will produce the best output.</p>
+        <a href="{{url_for('optimization')}}"><button class="custom-card-btn">REVIEW ></button></a>
+    </div>
+    <div class="custom-card">
+        <h3 class="custom-card-title">TRAVELING SALESMAN</h3>
+        <p class="custom-card-content">It can be explained as a seller's ability to reach all cities from the city she is in according to the given city list, by the shortest route, provided that she stops by only once.</p>
+        <a href="{{url_for('tsp')}}"><button class="custom-card-btn">REVIEW ></button></a>
+    </div>
+    <div class="custom-card">
+        <h3 class="custom-card-title">MONITOR</h3>
+        <p class="custom-card-content">Cloud monitor is an effort for better job distribution models
+on cloud computing platforms to reduce energy consumption,
+decrease computation and waiting time in the queue, and
+improve the overall utilization of resources.
+
+        </p>
+        <a href="{{ url_for('system_monitor') }}">
+    <button class="custom-card-btn">REVIEW ></button>
+</a>
+
+    </div>
+</div>
+{% endblock %}
